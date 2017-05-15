@@ -2,7 +2,6 @@ package com.simon.mybilibili.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -10,7 +9,7 @@ import android.widget.RelativeLayout;
 
 import com.simon.mybilibili.R;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
 
     private RelativeLayout mSplashRl;
 
