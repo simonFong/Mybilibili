@@ -12,11 +12,11 @@ import com.simon.mybilibili.R;
  * Created by simon on 2017/5/10.
  */
 
-public class TvOntimeFrag extends BaseFragment {
+public class FollowingFrag extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.tvontimelayout, null);
+        View view = inflater.inflate(R.layout.dynamiclayout, null);
         return view;
     }
 }

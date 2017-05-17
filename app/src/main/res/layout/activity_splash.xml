@@ -4,6 +4,7 @@
     android:id="@+id/activity_splash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
     android:background="@mipmap/bg_default_music_lockscreen_cover">
 
     <ImageView

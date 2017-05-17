@@ -4,10 +4,9 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,15 +14,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.simon.mybilibili.R;
-import com.simon.mybilibili.fragment.BaseFragment;
-import com.simon.mybilibili.fragment.CAFrag;
-import com.simon.mybilibili.fragment.DiscoveryFrag;
-import com.simon.mybilibili.fragment.DynamicFrag;
-import com.simon.mybilibili.fragment.PartitionFrag;
-import com.simon.mybilibili.fragment.RecommendFrag;
-import com.simon.mybilibili.fragment.TvOntimeFrag;
-
-import java.util.ArrayList;
+import com.simon.mybilibili.adapter.HomeContentAdapter;
 
 public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
@@ -33,7 +24,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private Button mPartitionBtn;
     private Button mDynamicBtn;
     private Button mDiscoveryBtn;
-    private ArrayList<BaseFragment> mFragList;
+
+    private DrawerLayout mDrawer;
+    private ViewPager mHomeContentVp;
+    private HomeContentAdapter mHomeContentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,36 +36,71 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         initView();
         initEvent();
-        initFragment();
+        //启动侧滑栏
+        startNavigation(this);
 
     }
 
     private void initView() {
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mTvOntimeBtn = (Button) findViewById(R.id.home_btn_guide_tvontime);
         mRecommendBtn = (Button) findViewById(R.id.home_btn_guide_recommend);
         mCaBtn = (Button) findViewById(R.id.home_btn_guide_ca);
         mPartitionBtn = (Button) findViewById(R.id.home_btn_guide_partition);
         mDynamicBtn = (Button) findViewById(R.id.home_btn_guide_dynamic);
         mDiscoveryBtn = (Button) findViewById(R.id.home_btn_guide_discovery);
+        mHomeContentVp = (ViewPager) findViewById(R.id.home_vp_content);
+        mHomeContentAdapter = new HomeContentAdapter(getSupportFragmentManager());
+        mHomeContentVp.setAdapter(mHomeContentAdapter);
+
+        //点击登录
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.inflateHeaderView(R.layout.nav_header_home);
+        headerView.findViewById(R.id.nav_header_home_img_icon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionStart(HomeActivity.this, LoginActivity.class);
+            }
+        });
+
+        headerView.findViewById(R.id.nav_header_home_tv_login).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionStart(HomeActivity.this, LoginActivity.class);
+            }
+        });
+
+        //点击首页头像跟文字弹出侧滑栏
+        findViewById(R.id.home_toolbar_iv_icon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawer.openDrawer(GravityCompat.START);
+            }
+        });
+        findViewById(R.id.home_toolbar_tv_title).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawer.openDrawer(GravityCompat.START);
+            }
+        });
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //有这个就会显示的是原生ActionBar的信息
         setSupportActionBar(toolbar);
 
+
+        //这是右下角的按钮
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //弹出一个类似吐司的信息框,可以右滑消除
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
     }
 
 
@@ -84,33 +113,50 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         mDiscoveryBtn.setOnClickListener(this);
     }
 
-    private void initFragment() {
-        mFragList = new ArrayList<>();
-        mFragList.add(new TvOntimeFrag());
-        mFragList.add(new RecommendFrag());
-        mFragList.add(new CAFrag());
-        mFragList.add(new PartitionFrag());
-        mFragList.add(new DynamicFrag());
-        mFragList.add(new DiscoveryFrag());
-
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.home_btn_guide_tvontime:
+                mHomeContentVp.setCurrentItem(0, true);
+                break;
+            case R.id.home_btn_guide_recommend:
+                mHomeContentVp.setCurrentItem(1, true);
+                break;
+            case R.id.home_btn_guide_ca:
+                mHomeContentVp.setCurrentItem(2, true);
+                break;
+            case R.id.home_btn_guide_partition:
+                mHomeContentVp.setCurrentItem(3, true);
+                break;
+            case R.id.home_btn_guide_dynamic:
+                mHomeContentVp.setCurrentItem(4, true);
+                break;
+            case R.id.home_btn_guide_discovery:
+                mHomeContentVp.setCurrentItem(5, true);
+                break;
+        }
     }
 
+
+    //按返回键
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
     }
 
+    //按菜单键
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -127,58 +173,5 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
-        //        if (id == R.id.nav_camera) {
-        //            // Handle the camera action
-        //        } else if (id == R.id.nav_gallery) {
-        //
-        //        } else if (id == R.id.nav_slideshow) {
-        //
-        //        } else if (id == R.id.nav_manage) {
-        //
-        //        } else if (id == R.id.nav_share) {
-        //
-        //        } else if (id == R.id.nav_send) {
-        //
-        //        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.home_btn_guide_tvontime:
-                changeFragment(mFragList.get(0));
-                break;
-            case R.id.home_btn_guide_recommend:
-                changeFragment(mFragList.get(1));
-                break;
-            case R.id.home_btn_guide_ca:
-                changeFragment(mFragList.get(2));
-                break;
-            case R.id.home_btn_guide_partition:
-                changeFragment(mFragList.get(3));
-                break;
-            case R.id.home_btn_guide_dynamic:
-                changeFragment(mFragList.get(4));
-                break;
-            case R.id.home_btn_guide_discovery:
-                changeFragment(mFragList.get(5));
-                break;
-        }
-    }
-
-    private void changeFragment(BaseFragment bf) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.home_fl_content, bf);
-        fragmentTransaction.commitAllowingStateLoss();
-    }
 }

@@ -4,5 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="themepink">#f77198</color> /*少女粉*/
+     <color name="deeperpink">#f7618c</color>/*深一点*/
+
     <color name="titleTextColour">#ffffff</color>/*字体颜色,白色*/
 </resources>

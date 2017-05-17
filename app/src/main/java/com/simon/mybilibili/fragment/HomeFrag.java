@@ -12,11 +12,11 @@ import com.simon.mybilibili.R;
  * Created by simon on 2017/5/10.
  */
 
-public class DynamicFrag extends BaseFragment {
+public class HomeFrag extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dynamiclayout, null);
+        View view = inflater.inflate(R.layout.recommendlayout, null);
         return view;
     }
 }
